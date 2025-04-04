@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        EARTHLY_BUILDKIT_HOST = "unix:///var/run/docker.sock"
+        EARTHLY_BUILDKIT_HOST = 'docker-container://earthly-buildkitd'
         IMAGE_NAME = "jeeva1512/myapp:latest"
         REGISTRY = "docker.io"
         GIT_CREDENTIALS_ID = 'github-pat'
@@ -26,7 +26,7 @@ pipeline {
 
         stage('Run Earthly Build') {
             steps {
-                sh 'earthly +docker'
+                sh 'earthly --ci +docker'
             }
         }
 
