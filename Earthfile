@@ -1,21 +1,22 @@
 VERSION 0.8
 
-# Define base target for installing dependencies
-target +base
-    FROM node:18 AS base
-    WORKDIR /app
+# Base target: install dependencies
+FROM node:18
+WORKDIR /app
 
+deps:
     COPY package.json package-lock.json ./
     RUN npm ci
 
-    COPY . .
-    RUN npm install --omit=dev
-
-# Define the final image build target
-target +docker
+# Build target (inherits from +base)
+build:
     FROM +base
     COPY . .
     RUN npm install --omit=dev
-    ENTRYPOINT ["node", "index.js"]
+    # RUN npm test  # Uncomment this line if you have tests
 
+# Docker target: creates and saves image
+docker:
+    FROM +build
+    ENTRYPOINT ["node", "index.js"]
     SAVE IMAGE jeeva1512/myapp:latest
