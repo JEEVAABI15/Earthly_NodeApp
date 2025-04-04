@@ -37,12 +37,22 @@ pipeline {
         //         }
         //     }
         // }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry("https://${env.REGISTRY}", 'docker-hub') {
+        //                 sh "docker push ${IMAGE_NAME}"
+        //             }
+        //         }
+        //     }
+        // }
         stage('Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry("https://${env.REGISTRY}", 'docker-hub') {
-                        sh "docker push ${IMAGE_NAME}"
-                    }
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $IMAGE_NAME
+                    '''
                 }
             }
         }
