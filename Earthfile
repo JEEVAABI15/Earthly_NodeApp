@@ -10,7 +10,7 @@ deps:
 
 # Build target (inherits from +base)
 build:
-    FROM +base
+    FROM +deps
     COPY . .
     RUN npm install --omit=dev
     # RUN npm test  # Uncomment this line if you have tests
