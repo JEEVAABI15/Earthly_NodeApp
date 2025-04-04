@@ -5,12 +5,22 @@ pipeline {
         EARTHLY_BUILDKIT_HOST = "unix:///var/run/docker.sock"
         IMAGE_NAME = "jeeva1512/myapp:latest"
         REGISTRY = "docker.io"
+        GIT_CREDENTIALS_ID = 'github-pat'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/myorg/my-nodejs-app.git'
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/JEEVAABI15/Earthly_NodeApp.git',
+                            credentialsId: env.GIT_CREDENTIALS_ID
+                        ]]
+                    ])
+                }
             }
         }
 
