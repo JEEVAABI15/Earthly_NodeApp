@@ -30,10 +30,19 @@ pipeline {
             }
         }
 
+        // stage('Push Docker Image') {
+        //     steps {
+        //         withDockerRegistry([credentialsId: 'docker-hub', url: "https://${env.REGISTRY}"]) {
+        //             sh "docker push ${IMAGE_NAME}"
+        //         }
+        //     }
+        // }
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub', url: "https://${env.REGISTRY}"]) {
-                    sh "docker push ${IMAGE_NAME}"
+                script {
+                    docker.withRegistry("https://${env.REGISTRY}", 'docker-hub') {
+                        sh "docker push ${IMAGE_NAME}"
+                    }
                 }
             }
         }
